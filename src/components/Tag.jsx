@@ -15,7 +15,7 @@ const Tag = ({ tagName, selectTag, selected }) => {
             type='button'
             className='tag'
             style={selected ? tagStyle[tagName] : tagStyle.default}
-            onClick={() => selectTag(tagName)}>
+           >
             {tagName}
         </button>
     );

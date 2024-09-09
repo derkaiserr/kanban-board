@@ -2,9 +2,10 @@ import React, { useState } from "react";
 
 import "./TaskForm.css";
 import Tag from "./Tag";
+import { addMoodAPI } from "../services/apiService";
 // import { getUsers, insertTable } from "../../kanban-server/statement";
 
-const TaskForm = ({ setTasks }) => {
+const TaskForm = ({ setTasks, tasks }) => {
   const [taskData, setTaskData] = useState({
     task: "",
     status: "todo",
@@ -27,6 +28,7 @@ const TaskForm = ({ setTasks }) => {
       });
     }
   };
+  // console.log(tasks )
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,19 +40,21 @@ const TaskForm = ({ setTasks }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(taskData);
     setTasks((prev) => {
       return [...prev, taskData];
     });
+    console.log(taskData);
     setTaskData({
       task: "",
       status: "todo",
       tags: [],
     });
+    // console.log(tasks);
+    const jsonTags = JSON.stringify(taskData.tags)
+    addMoodAPI(taskData.status, jsonTags, taskData.task);
     // insertTable(taskData.task)
     // getUsers()
   };
-
 
   return (
     <header className="app_header">

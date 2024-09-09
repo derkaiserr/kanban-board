@@ -6,89 +6,107 @@ import TaskColumn from "./components/TaskColumn";
 import todoIcon from "./assets/direct-hit.png";
 import doingIcon from "./assets/glowing-star.png";
 import doneIcon from "./assets/check-mark-button.png";
-
+import { addMoodAPI, getMoodsAPI, updateMoodAPI } from "./services/apiService";
 const oldTasks = localStorage.getItem("tasks");
 
 const App = () => {
-  const [tasks, setTasks] = useState(JSON.parse(oldTasks) || []);
-  const [activeCard, setActiveCard] = useState(null)
+  const [loading, setLoading] = useState(true);
+  const [activeCard, setActiveCard] = useState(null);
+  const [token, setToken] = useState([]);
+  const onDrop = async (status, position) => {
+    console.log(
+      `${activeCard} is going to ${status} and in position ${position}`
+    );
 
-  const onDrop = (status, position) =>{
-    console.log(`${activeCard} is going to ${status} and in position ${position}`)
+    if (activeCard == null || activeCard === undefined) return;
 
-    if(activeCard == null || activeCard === undefined) return;
-
-    const taskToMove = tasks[activeCard];
-    const updatedTasks = tasks.filter((task, index)=> index !== activeCard)
+    // Get the task to move
+    const taskToMove = token[activeCard];
+    // Remove the task from its current position
+    const updatedTasks = token.filter((task, index) => index !== activeCard);
+    // Insert the task into its new position
     updatedTasks.splice(position, 0, {
       ...taskToMove,
-      status: status
-    })
-    setTasks(updatedTasks)
-  }
+      status: status,
+    });
 
+    // Update the state locally
+    setToken(updatedTasks);
 
-  useEffect(() => {
-    fetch('http://localhost:3001/tasks')
-      .then(response => response.json())
-      .then(data => setTasks(data))
-      .catch(error => console.error('Error fetching tasks:', error));
-  }, []);
-  useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-  }, [tasks]);
-
-  const handleDelete = (taskIndex) => {
-    const newTasks = tasks.filter((task, index) => index !== taskIndex);
-    setTasks(newTasks);
+    try {
+      // Send the update to the backend
+      await updateMoodAPI(taskToMove.id, status);
+      // Optionally handle success (e.g., show a notification)
+    } catch (error) {
+      console.error('Error updating task on the server:', error);
+      // Rollback the local state if the update fails
+      fetchTasks(); // Re-fetch tasks from the server
+    }
   };
+  const fetchTasks = async () => {
+    try {
+      const newTasks = await getMoodsAPI();
+      setToken(newTasks); // Update state with the new data
 
+      console.log("Fetched tasks:", newTasks); // Logs the fetched data correctly
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    } finally {
+      setLoading(false); // Set loading to false regardless of success or error
+    }
+  };
+  useEffect(() => {
 
+    fetchTasks(); // Call the function to fetch tasks
+  }, []); 
 
+  
+  
 
-  // const sqlite3 = require("sqlite3").verbose();
+ 
 
-  // let db = new sqlite3.Database("./kanban.db", (err)=> {
-  //   if(err){
-  //     console.error(err.message)
-  //   }
-  //   console.log("Connected to the kanban SQLite database.");
-  // })
+  
 
-
+  if (loading) {
+    return <p>LOADING!</p>;
+  }
   return (
     <div className="app">
-      <TaskForm setTasks={setTasks} />
-      <main className="app_main">
-        <TaskColumn
-          title="To do"
-          icon={todoIcon}
-          tasks={tasks}
-          status="todo"
-          handleDelete={handleDelete}
-          setActiveCard={setActiveCard}
-          onDrop={onDrop}
-          />
-        <TaskColumn
-          title="Doing"
-          icon={doingIcon}
-          tasks={tasks}
-          status="doing"
-          handleDelete={handleDelete}
-          setActiveCard={setActiveCard}
-          onDrop={onDrop}
-          />
-        <TaskColumn
-          title="Done"
-          icon={doneIcon}
-          tasks={tasks}
-          status="done"
-          handleDelete={handleDelete}
-          setActiveCard={setActiveCard}
-          onDrop={onDrop}
-        />
-      </main>
-      <h1>Active Card - {activeCard}</h1>
+      { loading === false && (
+        <div>
+          <TaskForm setTasks={setToken} tasks={token} />
+          <main className="app_main">
+            <TaskColumn
+              title="To do"
+              icon={todoIcon}
+              tasks={token}
+              status="todo"
+              setActiveCard={setActiveCard}
+              onDrop={onDrop}
+              setTasks={setToken}
+              />
+            <TaskColumn
+              title="Doing"
+              icon={doingIcon}
+              tasks={token}
+              status="doing"
+              setActiveCard={setActiveCard}
+              onDrop={onDrop}
+              setTasks={setToken}
+              />
+            <TaskColumn
+              title="Done"
+              icon={doneIcon}
+              tasks={token}
+              status="done"
+              setActiveCard={setActiveCard}
+              setTasks={setToken}
+              onDrop={onDrop}
+            />
+          </main>
+         
+        </div>
+      )}
     </div>
   );
 };

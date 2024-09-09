@@ -10,15 +10,20 @@ const TaskColumn = ({
   icon,
   tasks,
   status,
-  handleDelete,
   setActiveCard,
+  setTasks,
   onDrop
 }) => {
+
+  // console.log(tasks[0].tags)
+  
   return (
     <section className="task_column">
       <h2 className="task_column_heading">
         <img className="task_column_icon" src={icon} alt="" /> {title}
       </h2>
+
+
 
           <DropArea onDrop={()=>onDrop(status, 0)}/>
       {tasks.map(
@@ -27,16 +32,24 @@ const TaskColumn = ({
             <React.Fragment
             
                 key={index}
-            >
+                >
               <TaskCard
+              
                 key={index}
                 title={task.task}
                 tags={task.tags}
-                handleDelete={handleDelete}
+                
                 index={index}
+                id={task.id}
+                tasks={tasks}
+                setTasks={setTasks}
+
                 setActiveCard={setActiveCard}
               />
               <DropArea onDrop={()=>onDrop(status, index + 1)}/>
+
+                {/* <p>{task.tags}</p>
+                <p>{task.title}</p> */}
             </React.Fragment>
           )
       )}
