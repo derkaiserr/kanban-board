@@ -41,5 +41,4 @@
 // // Fetch all users
 // getUsers();
 
-
 // export {insertTable, getUsers }
