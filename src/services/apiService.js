@@ -1,4 +1,4 @@
-const API_URL = "https://kanban-server-o37s.onrender.com";
+const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const getMoodsAPI = async () => {
   const response = await fetch(`${API_URL}/tasks`);
@@ -18,7 +18,6 @@ export const addMoodAPI = async (status, tag, task) => {
   return data;
 };
 
-
 export const updateMoodAPI = async (id, updatedStatus) => {
   const response = await fetch(`${API_URL}/tasks/${id}`, {
     method: "PUT",
@@ -35,7 +34,6 @@ export const updateMoodAPI = async (id, updatedStatus) => {
   return response.json();
 };
 
-
 // Delete mood
 export const deleteMoodAPI = async (id) => {
   try {
@@ -45,7 +43,9 @@ export const deleteMoodAPI = async (id) => {
 
     if (!response.ok) {
       const errorText = await response.text(); // Get error details from response
-      throw new Error(`Failed to delete task. Status: ${response.status}. Details: ${errorText}`);
+      throw new Error(
+        `Failed to delete task. Status: ${response.status}. Details: ${errorText}`,
+      );
     }
 
     return response.json();
@@ -54,6 +54,3 @@ export const deleteMoodAPI = async (id) => {
     throw error; // Rethrow error for further handling if needed
   }
 };
-
-
-
