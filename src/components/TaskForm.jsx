@@ -1,11 +1,23 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 
 import "./TaskForm.css";
 import Tag from "./Tag";
 import { addMoodAPI } from "../services/apiService";
+import {
+  Badge,
+  Flex,
+  Text,
+  Button,
+  Select,
+  Box,
+  TextField,
+} from "@radix-ui/themes";
+import { PlusIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 // import { getUsers, insertTable } from "../../kanban-server/statement";
 
 const TaskForm = ({ setTasks, tasks }) => {
+  const [value, setValue] = useState("");
   const [taskData, setTaskData] = useState({
     task: "",
     status: "todo",
@@ -50,63 +62,92 @@ const TaskForm = ({ setTasks, tasks }) => {
       tags: [],
     });
     // console.log(tasks);
-    const jsonTags = JSON.stringify(taskData.tags)
+    const jsonTags = JSON.stringify(taskData.tags);
     addMoodAPI(taskData.status, jsonTags, taskData.task);
     // insertTable(taskData.task)
     // getUsers()
   };
 
+  //TODO; fix the input state issue
+  const inputValue = taskData.task;
+
   return (
     <header className="app_header">
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="task"
-          value={taskData.task}
-          className="task_input"
-          placeholder="Enter your task"
-          onChange={handleChange}
-        />
+        <Box pb={"4"}>
+          <TextField.Root
+            name="task"
+            value={taskData.task}
+            onChange={handleChange}
+            placeholder="Enter your task..."
+          ></TextField.Root>
+        </Box>
 
         <div className="task_form_bottom_line">
-          <div>
-            <Tag
-              tagName="HTML"
-              selectTag={selectTag}
-              selected={checkTag("HTML")}
-            />
-            <Tag
-              tagName="CSS"
-              selectTag={selectTag}
-              selected={checkTag("CSS")}
-            />
-            <Tag
-              tagName="JavaScript"
-              selectTag={selectTag}
-              selected={checkTag("JavaScript")}
-            />
-            <Tag
-              tagName="React"
-              selectTag={selectTag}
-              selected={checkTag("React")}
-            />
-          </div>
-
-          <div>
-            <select
-              name="status"
-              value={taskData.status}
-              className="task_status"
-              onChange={handleChange}
+          <Flex gap="2">
+            <Badge
+              style={{
+                cursor: "pointer",
+              }}
+              color="plum"
+              variant={checkTag("HTML") ? "soft" : "surface"}
+              onClick={() => selectTag("HTML")}
+              highContrast={checkTag("HTML")}
             >
-              <option value="todo">To do</option>
-              <option value="doing">Doing</option>
-              <option value="done">Done</option>
-            </select>
-            <button type="submit" className="task_submit">
-              + Add Task
-            </button>
-          </div>
+              HTML
+            </Badge>
+            <Badge
+              style={{
+                cursor: "pointer",
+              }}
+              variant={checkTag("CSS") ? "soft" : "surface"}
+              onClick={() => selectTag("CSS")}
+              highContrast={checkTag("CSS")}
+              color="orange"
+            >
+              CSS
+            </Badge>
+            <Badge
+              style={{
+                cursor: "pointer",
+              }}
+              variant={checkTag("Javascript") ? "soft" : "surface"}
+              onClick={() => selectTag("Javascript")}
+              highContrast={checkTag("Javascript")}
+              color="cyan"
+            >
+              Javascript
+            </Badge>
+            <Badge
+              style={{
+                cursor: "pointer",
+              }}
+              variant={checkTag("React") ? "soft" : "surface"}
+              onClick={() => selectTag("React")}
+              highContrast={checkTag("React")}
+              color="iris"
+            >
+              React
+            </Badge>
+          </Flex>
+
+          <Flex gap="2" align={"center"}>
+            <Select.Root defaultValue={taskData.status} onChange={handleChange}>
+              <Select.Trigger />
+              <Select.Content>
+                <Select.Group>
+                  <Select.Item value="todo">To do</Select.Item>
+                  <Select.Item value="doing">Doing</Select.Item>
+                  <Select.Item value="done">Done</Select.Item>
+                </Select.Group>
+              </Select.Content>
+            </Select.Root>
+
+            <Button type="submit">
+              <PlusIcon />
+              Add Task
+            </Button>
+          </Flex>
         </div>
       </form>
     </header>
