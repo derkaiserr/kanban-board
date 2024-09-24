@@ -6,10 +6,7 @@ import TaskColumn from "./components/TaskColumn";
 import TaskForm from "./components/TaskForm";
 import { getMoodsAPI, updateMoodAPI } from "./services/apiService";
 
-// you read the env by adding VITE as the prefix
-const backendURL = import.meta.env.VITE_BACKEND_URL;
 
-console.log({ backendURL });
 
 const App = () => {
   const [loading, setLoading] = useState(true);
@@ -17,7 +14,7 @@ const App = () => {
   const [token, setToken] = useState([]);
   const onDrop = async (status, position) => {
     console.log(
-      `${activeCard} is going to ${status} and in position ${position}`,
+      `${activeCard} is going to ${status} and in position ${position}`
     );
 
     if (activeCard == null || activeCard === undefined) return;
@@ -61,8 +58,13 @@ const App = () => {
     fetchTasks(); // Call the function to fetch tasks
   }, []);
 
+
+  
   if (loading) {
+
     return (
+
+
       <Box
         style={{
           display: "grid",
@@ -71,6 +73,10 @@ const App = () => {
         width={"100%"}
         height={"100vh"}
       >
+
+        <head>
+          <title>Kanban-Board</title>
+        </head>
         <Flex align={"center"} gap={"2"}>
           <Spinner />
           <Text>
@@ -83,6 +89,9 @@ const App = () => {
       </Box>
     );
   }
+
+
+
   return (
     <div className="app">
       {loading === false && (

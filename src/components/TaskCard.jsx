@@ -86,6 +86,7 @@ const TaskCard = ({
             width: 14,
             display: "grid",
             placeItems: "center",
+            cursor: "pointer"
           }}
         >
           <Cross1Icon height={7} width={7} />

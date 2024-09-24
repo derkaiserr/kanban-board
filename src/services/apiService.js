@@ -1,4 +1,5 @@
-const API_URL = import.meta.env.VITE_BACKEND_URL;
+const API_URL = import.meta.env.VITE_BACKEND_URL
+
 
 export const getMoodsAPI = async () => {
   const response = await fetch(`${API_URL}/tasks`);

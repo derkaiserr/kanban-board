@@ -13,3 +13,14 @@
   width: 33.33%;
   margin: 20px;
 }
+
+.cursor-pointer{
+  cursor:pointer;
+}
+
+
+@media screen and (max-width: 500px) {
+  body{
+    transform: rotate(90deg);
+  }
+}

@@ -44,7 +44,6 @@ const TaskForm = ({ setTasks, tasks }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setTaskData((prev) => {
       return { ...prev, [name]: value };
     });
@@ -84,7 +83,7 @@ const TaskForm = ({ setTasks, tasks }) => {
         </Box>
 
         <div className="task_form_bottom_line">
-          <Flex gap="2">
+          <Flex gap="2" margin="5">
             <Badge
               style={{
                 cursor: "pointer",
@@ -132,8 +131,16 @@ const TaskForm = ({ setTasks, tasks }) => {
           </Flex>
 
           <Flex gap="2" align={"center"}>
-            <Select.Root defaultValue={taskData.status} onChange={handleChange}>
-              <Select.Trigger />
+            <Select.Root
+              value={taskData.status}
+              name="status"
+              onValueChange={(value) =>
+                setTaskData((prev) => ({ ...prev, status: value }))
+              }
+              
+              className="cursor-pointer"
+            >
+              <Select.Trigger  style={{ cursor: 'pointer' }} />
               <Select.Content>
                 <Select.Group>
                   <Select.Item value="todo">To do</Select.Item>
@@ -143,7 +150,7 @@ const TaskForm = ({ setTasks, tasks }) => {
               </Select.Content>
             </Select.Root>
 
-            <Button type="submit">
+            <Button  style={{ cursor: 'pointer' }} type="submit">
               <PlusIcon />
               Add Task
             </Button>
